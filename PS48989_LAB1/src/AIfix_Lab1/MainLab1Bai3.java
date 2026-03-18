@@ -1,65 +1,75 @@
 package AIfix_Lab1;
-import NhanVien_Lab1.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainLab1Bai3 {
-	public static void main(String[] args) {
-        ArrayList<Employee> listEmployee = new ArrayList<>();
+		static class Student {
+	        String name;
+	        String email;
+	        double score;
 
-        // --- BƯỚC 1: DÙNG AI TẠO DỮ LIỆU MẪU (BAO GỒM DỮ LIỆU LỖI) ---
-        // 1. Dữ liệu đúng
-        listEmployee.add(new FullTimeEmployee("FT01", "Nguyễn An", 1500, 200, 0));
-        
-        // 2. LỖI: ID rỗng (Dữ liệu lỗi 1)
-        listEmployee.add(new FullTimeEmployee("", "Trần Bình", 2000, 100, 50));
-        
-        // 3. LỖI: Lương cơ bản âm (Dữ liệu lỗi 2)
-        listEmployee.add(new PartTimeEmployee("PT01", "Lê Chi", -500, 40, 20));
-        
-        // 4. Dữ liệu đúng
-        listEmployee.add(new PartTimeEmployee("PT02", "Phạm Dương", 0, 50, 30));
-        listEmployee.add(new FullTimeEmployee("FT02", "Hoàng Giang", 1800, 150, 20));
+	        public Student(String name, String email, double score) {
+	            this.name = name;
+	            this.email = email;
+	            this.score = score;
+	        }
 
-        System.out.println(">>> TRẠNG THÁI: Đang quét và sửa lỗi dữ liệu bằng AI...");
-        
-        // --- BƯỚC 2: SỬ DỤNG LOGIC AI ĐỂ FIX LỖI ---
-        for (Employee e : listEmployee) {
-            fixDataError(e);
-        }
+	        @Override
+	        public String toString() {
+	            return String.format("| %-15s | %-20s | %-5.1f |", name, email, score);
+	        }
+	    }
 
-        // --- BƯỚC 3: IN DANH SÁCH SAU KHI ĐÃ FIX ---
-        System.out.println("\n======= DANH SÁCH NHÂN VIÊN (ĐÃ CHUẨN HÓA) =======");
-        for (Employee e : listEmployee) {
-            System.out.println(e.toString());
-        }
+	    public static void main(String[] args) {
+	        List<Object[]> rawData = new ArrayList<>();
+	        rawData.add(new Object[]{"Minh Tin", "tinntm@fpt.edu.vn", 9.5}); 
+	        rawData.add(new Object[]{"", "error@gmail.com", 8.0});           
+	        rawData.add(new Object[]{"Tran Van A", "abc-gmail.com", 7.0});    
+	        rawData.add(new Object[]{"Le Thi B", "lethib@fpt.edu.vn", -5.0});
+	        rawData.add(new Object[]{"Hoang C", "hoang@fpt.edu.vn", "10đ"});  
 
-        // --- BƯỚC 4: TÌM THU NHẬP CAO NHẤT (DÙNG STREAM API) ---
-        System.out.print("\n>>> NHÂN VIÊN CÓ THU NHẬP CAO NHẤT: ");
-        Employee maxEmp = listEmployee.get(0); 
-        for (Employee e : listEmployee) {
-            if (e.income() > maxEmp.income()) {
-                maxEmp = e; 
-            }
-        }
-        System.out.println(maxEmp);
-    }
+	        List<Student> validStudents = new ArrayList<>();
 
-    /**
-     * Hàm giả lập AI để tự động phát hiện và sửa lỗi dữ liệu
-     */
-    public static void fixDataError(Employee e) {
-        // Kiểm tra lỗi ID
-        if (e.getId() == null || e.getId().trim().isEmpty()) {
-            String autoID = "FIXED_ID_" + (int)(Math.random() * 1000);
-            e.setId(autoID);
-            System.err.println("[FIXED] Đã sửa ID trống cho NV: " + e.getName() + " -> " + autoID);
-        }
+	        System.out.println("--- QUÁ TRÌNH AI KIỂM TRA VÀ FIX LỖI ---");
 
-        // Kiểm tra lỗi Lương âm
-        if (e.getBasicSalary() < 0) {
-            e.setBasicSalary(0);
-            System.err.println("[FIXED] Đã đưa lương âm về 0 cho ID: " + e.getId());
-        }
-    }
+	        for (Object[] data : rawData) {
+	            try {
+	                String name = (String) data[0];
+	                String email = (String) data[1];
+	                
 
+	                double score;
+	                if (data[2] instanceof String) {
+
+	                    String scoreStr = ((String) data[2]).replaceAll("[^0-9.]", "");
+	                    score = Double.parseDouble(scoreStr);
+	                    System.out.println("[FIXED] Đã chuyển đổi điểm '" + data[2] + "' thành " + score);
+	                } else {
+	                    score = (Double) data[2];
+	                }
+	                if (name == null || name.trim().isEmpty()) {
+	                    throw new Exception("Lỗi: Tên không được để trống!");
+	                }
+	                if (!email.contains("@") || !email.contains(".")) {
+	                    throw new Exception("Lỗi: Định dạng Email '" + email + "' không hợp lệ!");
+	                }
+	                if (score < 0 || score > 10) {
+	                    throw new Exception("Lỗi: Điểm " + score + " nằm ngoài phạm vi (0-10)!");
+	                }
+	                validStudents.add(new Student(name, email, score));
+
+	            } catch (Exception e) {
+	                System.out.println("[REJECTED] " + e.getMessage());
+	            }
+	        }
+
+	        System.out.println("\n--- DANH SÁCH DỮ LIỆU ĐÃ LÀM SẠCH ---");
+	        System.out.println("-----------------------------------------------------");
+	        System.out.println("| Họ và Tên       | Email                | Điểm  |");
+	        System.out.println("-----------------------------------------------------");
+	        for (Student s : validStudents) {
+	            System.out.println(s);
+	        }
+	        System.out.println("-----------------------------------------------------");
+	    }
 }

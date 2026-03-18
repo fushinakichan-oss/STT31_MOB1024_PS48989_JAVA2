@@ -1,16 +1,16 @@
-package SanPham_Lab1;
+package Bai4_Lab1;
 
-public class Product {
+public class Ticket {
 	private String id;
-	private String name;
+	private String customerName;
 	private double basePrice;
 	
 	
-	public Product() {
+	public Ticket() {
 	}
-	public Product(String id, String name, double basePrice) {
+	public Ticket(String id, String customerName, double basePrice) {
 		this.setId(id);
-		this.name = name;
+		this.customerName = customerName;
 		this.setBasePrice(basePrice);
 	}
 	public String getId() {
@@ -24,10 +24,10 @@ public class Product {
 		return false;
 	}
 	public String getName() {
-		return name;
+		return customerName;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setName(String customerName) {
+		this.customerName = customerName;
 	}
 	public double getBasePrice() {
 		return basePrice;
@@ -39,12 +39,12 @@ public class Product {
 	    }
 	return false;
 	}
-	public double finalPrice() {
+	public double calculateTotal() {
 		return this.basePrice;
 	}
 	@Override
 	public String toString() {
-		return "Product [id=" + id + ", name=" + name + ", basePrice=" + basePrice +",finalPrice()="+finalPrice()+"]";
+		return "Product [id=" + id + ", customerName=" + customerName + ", basePrice=" + basePrice +"]";
 	}
-	
+
 }
